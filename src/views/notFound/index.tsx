@@ -1,10 +1,16 @@
+import { Typography } from '@mui/material';
+
 const NotFound = () => {
-    return (
-      <div>
-        <h1>404 - Página No Encontrada</h1>
-        <p>Lo sentimos, la página que buscas no existe.</p>
-      </div>
-    );
-  };
-  
-  export default NotFound;
+  return (
+    <>
+      <Typography variant="h1" component="h2">
+        404 - Página No Encontrada
+      </Typography>
+      <Typography variant="body1">
+        Lo sentimos, la página que buscas no existe.
+      </Typography>
+    </>
+  );
+};
+
+export default NotFound;
