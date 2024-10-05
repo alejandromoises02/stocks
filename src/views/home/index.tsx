@@ -1,10 +1,21 @@
+import { useState } from 'react';
 import { Typography } from '@mui/material';
-import { ErrorMessage, LoadingSpinner } from '../../components/shared';
+import {
+  ErrorMessage,
+  LoadingSpinner,
+  Paginated,
+} from '../../components/shared';
 import { useGetStocksQuery } from '../../store/service/StockService';
+import { Content } from '../../styles';
 
 const Home = () => {
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const { data, isLoading, isError } = useGetStocksQuery({});
   console.log(data);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   if (isLoading) return <LoadingSpinner />;
   if (isError)
@@ -15,9 +26,18 @@ const Home = () => {
     );
 
   return (
-    <Typography variant="h1" component="h2">
-      Home
-    </Typography>
+    <>
+      <Content>
+        <Typography variant="h1" component="h2">
+          Home
+        </Typography>
+      </Content>
+      <Paginated
+        page={currentPage}
+        onPageChange={handlePageChange}
+        count={10}
+      />
+    </>
   );
 };
 
