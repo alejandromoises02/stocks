@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Typography } from '@mui/material';
 import {
   ErrorMessage,
   LoadingSpinner,
   Paginated,
+  Table,
 } from '../../components/shared';
 import { useGetStocksQuery } from '../../store/service/StockService';
 import { Content } from '../../styles';
@@ -21,7 +21,6 @@ const Home = () => {
     page: currentPage - 1,
     outputsize: defaultOutputSize,
   });
-  console.log(stock);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -38,9 +37,7 @@ const Home = () => {
   return (
     <>
       <Content>
-        <Typography variant="h1" component="h2">
-          Home
-        </Typography>
+        <Table data={stock.data} />
       </Content>
       <Paginated
         page={currentPage}
