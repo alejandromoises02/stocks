@@ -1,10 +1,5 @@
 import { Pagination, Stack } from '@mui/material';
-
-interface IPaginatedProps {
-  count: number;
-  onPageChange: (page: number) => void;
-  page: number;
-}
+import { IPaginatedProps } from '../../../types';
 
 const Paginated = ({ page, onPageChange, count }: IPaginatedProps) => {
   const handleChange = (_: unknown, value: number) => {

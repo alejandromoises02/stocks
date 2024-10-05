@@ -13,6 +13,12 @@ export const Content = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  margin: 40px
+  width: 90%;
+  margin: 40px;
+`;
+
+export const ContentSearch = styled.div`
+  display: flex;
+  width: 90%;
+  justify-content: space-around;
 `;

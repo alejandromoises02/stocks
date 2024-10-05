@@ -7,19 +7,9 @@ import {
   TableRow,
   Paper,
 } from '@mui/material';
+import { IStockTableProps } from '../../../types';
 
-interface Stock {
-  currency: string;
-  name: string;
-  symbol: string;
-  type: string;
-}
-
-interface StockTableProps {
-  data: Stock[];
-}
-
-const Table = ({ data }: StockTableProps) => {
+const Table = ({ data }: IStockTableProps) => {
   return (
     <TableContainer component={Paper}>
       <TableMui>

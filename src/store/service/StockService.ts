@@ -11,8 +11,8 @@ export const stocksApi = createApi({
   tagTypes: ['stocks'],
   endpoints: (builder) => ({
     getStocks: builder.query({
-      query: ({ page, outputsize }) =>
-        `/stocks?page=${page}&outputsize=${outputsize}&apikey=${apiKey}`,
+      query: ({ page, outputsize, name, symbol }) =>
+        `/stocks?page=${page}&outputsize=${outputsize}&exchange=${name}&symbol=${symbol}&apikey=${apiKey}&source=docs`,
       providesTags: ['stocks'],
     }),
   }),

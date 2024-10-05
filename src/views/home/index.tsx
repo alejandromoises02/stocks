@@ -4,15 +4,22 @@ import {
   LoadingSpinner,
   Paginated,
   Table,
+  Search,
 } from '../../components/shared';
 import { useGetStocksQuery } from '../../store/service/StockService';
-import { Content } from '../../styles';
+import { Container, Content, ContentSearch } from '../../styles';
 import { MESSAGES, defaultOutputSize } from '../../utils/constants';
+import { ISearchValues } from '../../types';
 
 const { DEFAULT_ERROR_FETCH } = MESSAGES;
 
 const Home = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchValues, setSearchValues] = useState<ISearchValues>({
+    name: '',
+    symbol: '',
+  });
+
   const {
     data: stock,
     isLoading,
@@ -20,7 +27,13 @@ const Home = () => {
   } = useGetStocksQuery({
     page: currentPage - 1,
     outputsize: defaultOutputSize,
+    name: searchValues.name,
+    symbol: searchValues.symbol,
   });
+
+  const handleSearch = (value: string, type: string) => {
+    setSearchValues((prev)=>({ ...prev, [type]: value }));
+  };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -35,7 +48,11 @@ const Home = () => {
     );
 
   return (
-    <>
+    <Container>
+      <ContentSearch>
+        <Search title="Nombre" onSearch={handleSearch} type="name" />
+        <Search title="Simbolo" onSearch={handleSearch} type="symbol" />
+      </ContentSearch>
       <Content>
         <Table data={stock.data} />
       </Content>
@@ -44,7 +61,7 @@ const Home = () => {
         onPageChange={handlePageChange}
         count={Math.ceil(stock.count / defaultOutputSize)}
       />
-    </>
+    </Container>
   );
 };
 
