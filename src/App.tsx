@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import Home from './views/home';
 import Action from './views/action';
 import NotFound from './views/notFound';
-import { Container } from './views/styles';
+import { Container } from './styles';
 
 function App() {
   return (
