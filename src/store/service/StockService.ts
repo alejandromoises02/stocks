@@ -8,14 +8,19 @@ export const stocksApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: twelvedataUrl,
   }),
-  tagTypes: ['stocks'],
+  tagTypes: ['stocks', 'stock'],
   endpoints: (builder) => ({
     getStocks: builder.query({
       query: ({ page, outputsize, name, symbol }) =>
         `/stocks?page=${page}&outputsize=${outputsize}&exchange=${name}&symbol=${symbol}&apikey=${apiKey}&source=docs`,
       providesTags: ['stocks'],
     }),
+    getStock: builder.query({
+      query: ({ mic_code }) =>
+        `/stocks?mic_code=${mic_code}&apikey=${apiKey}&source=docs`,
+      providesTags: ['stock'],
+    }),
   }),
 });
 
-export const { useGetStocksQuery } = stocksApi;
+export const { useGetStocksQuery, useGetStockQuery } = stocksApi;

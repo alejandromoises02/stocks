@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import {
   Table as TableMui,
   TableBody,
@@ -24,7 +25,9 @@ const Table = ({ data }: IStockTableProps) => {
         <TableBody>
           {data.map((stock, index) => (
             <TableRow key={index}>
-              <TableCell>{stock.symbol}</TableCell>
+              <TableCell>
+                <Link to={`/action/${stock.mic_code}`}>{stock.symbol}</Link>
+              </TableCell>
               <TableCell>{stock.name}</TableCell>
               <TableCell>{stock.currency}</TableCell>
               <TableCell>{stock.type}</TableCell>

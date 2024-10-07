@@ -15,6 +15,7 @@ export interface IStock {
   name: string;
   symbol: string;
   type: string;
+  mic_code: string;
 }
 
 export interface IStockTableProps {

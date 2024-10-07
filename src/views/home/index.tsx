@@ -32,7 +32,8 @@ const Home = () => {
   });
 
   const handleSearch = (value: string, type: string) => {
-    setSearchValues((prev)=>({ ...prev, [type]: value }));
+    setSearchValues((prev) => ({ ...prev, [type]: value }));
+    setCurrentPage(1);
   };
 
   const handlePageChange = (page: number) => {
