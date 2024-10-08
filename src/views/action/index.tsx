@@ -1,10 +1,9 @@
-import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetStockQuery } from '../../store/service/StockService';
-import { Typography, Divider, SelectChangeEvent } from '@mui/material';
+import { Typography, Divider } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs, { Dayjs } from 'dayjs';
+import { useGetStockQuery } from '../../store/service/StockService';
+import useDateRangeOptions from '../../hooks/useDataStocks';
 import {
   ErrorMessage,
   LoadingSpinner,
@@ -17,25 +16,13 @@ import {
   MESSAGES,
   VALUES_TYPE_VIEW,
   OPTIONS_INTERVAL,
-  DEFAULT_VALUE_INTERVAL,
 } from '../../utils/constants';
 
 const { DEFAULT_ERROR_FETCH } = MESSAGES;
 
 const Action = () => {
-  const [selectedValue, setSelectedValue] = useState<string>(
-    VALUES_TYPE_VIEW.realTime,
-  );
-  const [dateRange, setDateRange] = useState<{
-    fromDate: Dayjs | null;
-    toDate: Dayjs | null;
-  }>({
-    fromDate: dayjs(),
-    toDate: dayjs(),
-  });
-  console.log({ dateRange });
+  const { values, actions } = useDateRangeOptions();
 
-  const [interval, setInterval] = useState<string>(DEFAULT_VALUE_INTERVAL);
   const { symbol, exchange } = useParams<{
     symbol: string;
     exchange: string;
@@ -49,21 +36,6 @@ const Action = () => {
     symbol,
     exchange,
   });
-
-  const handleChangeOption = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedValue(event.target.value);
-  };
-
-  const handleIntervalChange = (event: SelectChangeEvent) => {
-    setInterval(event.target.value as string);
-  };
-
-  const handleDateRangeChange = (values: {
-    fromDate: Dayjs | null;
-    toDate: Dayjs | null;
-  }) => {
-    setDateRange(values);
-  };
 
   if (isLoading) return <LoadingSpinner />;
   if (isError)
@@ -82,8 +54,8 @@ const Action = () => {
           <ContentForm>
             <CustomRadioGroup
               name={'radio-buttons-options'}
-              value={selectedValue}
-              handleChange={handleChangeOption}
+              value={values.selectedValue}
+              handleChange={actions.handleOptionChange}
               options={[
                 { value: VALUES_TYPE_VIEW.realTime, label: 'Tiempo Real' },
                 { value: VALUES_TYPE_VIEW.history, label: 'Histórico' },
@@ -91,20 +63,22 @@ const Action = () => {
             />
           </ContentForm>
 
-          {selectedValue === VALUES_TYPE_VIEW.history && (
+          {values.selectedValue === VALUES_TYPE_VIEW.history && (
             <ContentForm>
-              <DateTimeRangePicker onChangeValues={handleDateRangeChange} />
+              <DateTimeRangePicker
+                onChangeValues={actions.handleDateRangeChange}
+              />
             </ContentForm>
           )}
 
-          {selectedValue === VALUES_TYPE_VIEW.realTime && (
+          {values.selectedValue === VALUES_TYPE_VIEW.realTime && (
             <ContentForm>
               <CustomSelect
                 labelId={'select-interval-label'}
                 id={'select-interval'}
-                value={interval}
+                value={values.interval}
                 label={'Intervalo'}
-                handleChange={handleIntervalChange}
+                handleChange={actions.handleIntervalChange}
                 options={OPTIONS_INTERVAL}
               />
             </ContentForm>
