@@ -1,8 +1,12 @@
+import { useCallback, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Typography, Divider } from '@mui/material';
+import { Typography, Divider, Button, FormHelperText } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { useGetStockQuery } from '../../store/service/StockService';
+import {
+  useGetStockQuery,
+  useLazyGetTimeSeriesQuery,
+} from '../../store/service/StockService';
 import useDateRangeOptions from '../../hooks/useDataStocks';
 import {
   ErrorMessage,
@@ -17,11 +21,26 @@ import {
   VALUES_TYPE_VIEW,
   OPTIONS_INTERVAL,
 } from '../../utils/constants';
+import { validateGraphInputs } from '../../utils';
+import { IValidationResult } from '../../types';
 
 const { DEFAULT_ERROR_FETCH } = MESSAGES;
 
 const Action = () => {
+  const [errorMessage, setErrorMessage] = useState<IValidationResult>({
+    hasError: false,
+    message: '',
+  });
   const { values, actions } = useDateRangeOptions();
+  const [
+    trigger,
+    {
+      data: timeSeries,
+      error: isTimeSeriesError,
+      isLoading: isTimeSeriesLoading,
+    },
+  ] = useLazyGetTimeSeriesQuery();
+  console.log({ timeSeries, isTimeSeriesError, isTimeSeriesLoading });
 
   const { symbol, exchange } = useParams<{
     symbol: string;
@@ -36,6 +55,30 @@ const Action = () => {
     symbol,
     exchange,
   });
+
+  const handleShowGraph = useCallback(() => {
+    const errors = validateGraphInputs(values);
+    if (errors.hasError) {
+      setErrorMessage(errors);
+      return;
+    }
+    setErrorMessage({ hasError: false, message: '' });
+
+    const basePayload: {
+      symbol: string | undefined;
+      interval: string;
+      start_date?: string;
+      end_date?: string;
+    } = {
+      symbol,
+      interval: values.interval,
+    };
+    if (values.selectedValue === VALUES_TYPE_VIEW.history) {
+      basePayload.start_date = values.dateRange.fromDate?.toISOString();
+      basePayload.end_date = values.dateRange.toDate?.toISOString();
+    }
+    trigger(basePayload);
+  }, [symbol, trigger, values]);
 
   if (isLoading) return <LoadingSpinner />;
   if (isError)
@@ -71,19 +114,23 @@ const Action = () => {
             </ContentForm>
           )}
 
-          {values.selectedValue === VALUES_TYPE_VIEW.realTime && (
-            <ContentForm>
-              <CustomSelect
-                labelId={'select-interval-label'}
-                id={'select-interval'}
-                value={values.interval}
-                label={'Intervalo'}
-                handleChange={actions.handleIntervalChange}
-                options={OPTIONS_INTERVAL}
-              />
-            </ContentForm>
-          )}
+          <ContentForm>
+            <CustomSelect
+              labelId={'select-interval-label'}
+              id={'select-interval'}
+              value={values.interval}
+              label={'Intervalo'}
+              handleChange={actions.handleIntervalChange}
+              options={OPTIONS_INTERVAL}
+            />
+          </ContentForm>
         </LocalizationProvider>
+        <Button variant="contained" color="primary" onClick={handleShowGraph}>
+          Graficar
+        </Button>
+        {errorMessage.hasError && (
+          <FormHelperText error>{errorMessage.message}</FormHelperText>
+        )}
       </Container>
     </>
   );

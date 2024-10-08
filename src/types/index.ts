@@ -74,3 +74,19 @@ export interface IDateTimeRangePickerProps {
     toDate: Dayjs | null;
   }) => void;
 }
+
+export type IDateRange = {
+  fromDate: Dayjs | null;
+  toDate: Dayjs | null;
+};
+
+export interface IValidationResult {
+  hasError: boolean;
+  message: string;
+}
+
+export interface IGraphInputValues {
+  selectedValue: string;
+  interval: string | null;
+  dateRange: IDateRange;
+}

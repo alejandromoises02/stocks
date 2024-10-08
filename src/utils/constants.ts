@@ -10,9 +10,9 @@ export const VALUES_TYPE_VIEW = {
 };
 
 export const OPTIONS_INTERVAL = [
-  { value: '1', label: '1min' },
-  { value: '5', label: '5min' },
-  { value: '15', label: '15min' },
+  { value: '1min', label: '1min' },
+  { value: '5min', label: '5min' },
+  { value: '15min', label: '15min' },
 ];
 
 export const DEFAULT_VALUE_INTERVAL = OPTIONS_INTERVAL[0].value;
