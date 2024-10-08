@@ -90,3 +90,19 @@ export interface IGraphInputValues {
   interval: string | null;
   dateRange: IDateRange;
 }
+
+export interface IStockData {
+  datetime: string;
+  open: string;
+  high: string;
+  low: string;
+  close: string;
+  volume: string;
+}
+
+export interface IStockChartProps {
+  data: IStockData[];
+  title?: string;
+  isError?: boolean;
+  isLoading?: boolean;
+}

@@ -15,6 +15,7 @@ import {
   CustomSelect,
   CustomRadioGroup,
 } from '../../components/shared';
+import { StockChart } from '../../components/stocks/';
 import { Container, ContentForm } from '../../styles';
 import {
   MESSAGES,
@@ -32,15 +33,8 @@ const Action = () => {
     message: '',
   });
   const { values, actions } = useDateRangeOptions();
-  const [
-    trigger,
-    {
-      data: timeSeries,
-      error: isTimeSeriesError,
-      isLoading: isTimeSeriesLoading,
-    },
-  ] = useLazyGetTimeSeriesQuery();
-  console.log({ timeSeries, isTimeSeriesError, isTimeSeriesLoading });
+  const [trigger, { data: timeSeries, isLoading: isTimeSeriesLoading }] =
+    useLazyGetTimeSeriesQuery();
 
   const { symbol, exchange } = useParams<{
     symbol: string;
@@ -128,8 +122,20 @@ const Action = () => {
         <Button variant="contained" color="primary" onClick={handleShowGraph}>
           Graficar
         </Button>
+
         {errorMessage.hasError && (
           <FormHelperText error>{errorMessage.message}</FormHelperText>
+        )}
+        {isTimeSeriesLoading && <LoadingSpinner />}
+        {timeSeries && (
+          <ContentForm>
+            {timeSeries.values && (
+              <StockChart data={timeSeries.values} title={symbol} />
+            )}
+            {timeSeries.status === 'error' && (
+              <FormHelperText error>{timeSeries.message}</FormHelperText>
+            )}
+          </ContentForm>
         )}
       </Container>
     </>
