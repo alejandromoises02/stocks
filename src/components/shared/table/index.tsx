@@ -26,7 +26,9 @@ const Table = ({ data }: IStockTableProps) => {
           {data.map((stock, index) => (
             <TableRow key={index}>
               <TableCell>
-                <Link to={`/action/${stock.mic_code}`}>{stock.symbol}</Link>
+                <Link to={`/action/${stock.symbol}/${stock.exchange}`}>
+                  {stock.symbol}
+                </Link>
               </TableCell>
               <TableCell>{stock.name}</TableCell>
               <TableCell>{stock.currency}</TableCell>

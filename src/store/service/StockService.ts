@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { IApiResponse } from '../../types';
 
 const twelvedataUrl = 'https://api.twelvedata.com';
 const apiKey = 'cd298b575d864878924d2419895741ac';
@@ -16,9 +17,10 @@ export const stocksApi = createApi({
       providesTags: ['stocks'],
     }),
     getStock: builder.query({
-      query: ({ mic_code }) =>
-        `/stocks?mic_code=${mic_code}&apikey=${apiKey}&source=docs`,
+      query: ({ symbol, exchange }) =>
+        `/stocks?symbol=${symbol}&exchange=${exchange}&apikey=${apiKey}&source=docs`,
       providesTags: ['stock'],
+      transformResponse: (res: IApiResponse) => res.data[0],
     }),
   }),
 });

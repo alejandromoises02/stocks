@@ -1,15 +1,18 @@
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, useCallback } from 'react';
 import { TextField, Box } from '@mui/material';
 import { ISearchProps } from '../../../types';
 
 const Search = ({ title, onSearch, type }: ISearchProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setSearchTerm(value);
-    onSearch(value, type);
-  };
+  const handleChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value;
+      setSearchTerm(value);
+      onSearch(value, type);
+    },
+    [onSearch, type],
+  );
 
   return (
     <Box>

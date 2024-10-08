@@ -17,6 +17,14 @@ export const Content = styled.div`
   margin: 40px;
 `;
 
+export const ContentForm = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  margin: 40px;
+`;
+
 export const ContentSearch = styled.div`
   display: flex;
   width: 90%;

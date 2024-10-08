@@ -8,7 +8,7 @@ import {
 } from '../../components/shared';
 import { useGetStocksQuery } from '../../store/service/StockService';
 import { Container, Content, ContentSearch } from '../../styles';
-import { MESSAGES, defaultOutputSize } from '../../utils/constants';
+import { MESSAGES, DEFAULT_OUTPUT_SIZE } from '../../utils/constants';
 import { ISearchValues } from '../../types';
 
 const { DEFAULT_ERROR_FETCH } = MESSAGES;
@@ -21,12 +21,12 @@ const Home = () => {
   });
 
   const {
-    data: stock,
+    data: stocks,
     isLoading,
     isError,
   } = useGetStocksQuery({
     page: currentPage - 1,
-    outputsize: defaultOutputSize,
+    outputsize: DEFAULT_OUTPUT_SIZE,
     name: searchValues.name,
     symbol: searchValues.symbol,
   });
@@ -41,12 +41,8 @@ const Home = () => {
   };
 
   if (isLoading) return <LoadingSpinner />;
-  if (isError || stock.status === 'error')
-    return (
-      <>
-        <ErrorMessage message={stock.message || DEFAULT_ERROR_FETCH} />
-      </>
-    );
+  if (isError || stocks.status === 'error')
+    return <ErrorMessage message={stocks.message || DEFAULT_ERROR_FETCH} />;
 
   return (
     <Container>
@@ -55,12 +51,12 @@ const Home = () => {
         <Search title="Simbolo" onSearch={handleSearch} type="symbol" />
       </ContentSearch>
       <Content>
-        <Table data={stock.data} />
+        <Table data={stocks.data} />
       </Content>
       <Paginated
         page={currentPage}
         onPageChange={handlePageChange}
-        count={Math.ceil(stock.count / defaultOutputSize)}
+        count={Math.ceil(stocks.count / DEFAULT_OUTPUT_SIZE)}
       />
     </Container>
   );
