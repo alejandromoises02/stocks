@@ -1,6 +1,9 @@
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import { FormHelperText } from '@mui/material';
 import { IStockData, IStockChartProps } from '../../../types';
+import { LoadingSpinner } from '../../shared';
+import { ContentForm } from '../../../styles';
 
 const transformData = (data: IStockData[]) => {
   return data.map((item) => [
@@ -9,7 +12,7 @@ const transformData = (data: IStockData[]) => {
   ]);
 };
 
-const StockChart = ({ data, title }: IStockChartProps) => {
+const StockChart = ({ timeSeries, title, isLoading }: IStockChartProps) => {
   const options = {
     title: {
       text: title || 'Cotización vs Intervalo',
@@ -28,7 +31,7 @@ const StockChart = ({ data, title }: IStockChartProps) => {
     series: [
       {
         name: 'Cotización',
-        data: transformData(data),
+        data: transformData(timeSeries?.values || []),
         tooltip: {
           valueDecimals: 2,
         },
@@ -42,7 +45,17 @@ const StockChart = ({ data, title }: IStockChartProps) => {
 
   return (
     <div>
-      <HighchartsReact highcharts={Highcharts} options={options} />
+      {isLoading && <LoadingSpinner />}
+      {timeSeries && (
+        <ContentForm>
+          {timeSeries.values && (
+            <HighchartsReact highcharts={Highcharts} options={options} />
+          )}
+          {timeSeries.status === 'error' && (
+            <FormHelperText error>{timeSeries.message}</FormHelperText>
+          )}
+        </ContentForm>
+      )}
     </div>
   );
 };

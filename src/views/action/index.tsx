@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Typography, Divider, Button, FormHelperText } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -8,6 +8,7 @@ import {
   useLazyGetTimeSeriesQuery,
 } from '../../store/service/StockService';
 import useDateRangeOptions from '../../hooks/useDataStocks';
+import useRealTimeData from '../../hooks/useRealTimeData';
 import {
   ErrorMessage,
   LoadingSpinner,
@@ -22,7 +23,6 @@ import {
   VALUES_TYPE_VIEW,
   OPTIONS_INTERVAL,
 } from '../../utils/constants';
-import { validateGraphInputs } from '../../utils';
 import { IValidationResult } from '../../types';
 
 const { DEFAULT_ERROR_FETCH } = MESSAGES;
@@ -36,10 +36,7 @@ const Action = () => {
   const [trigger, { data: timeSeries, isLoading: isTimeSeriesLoading }] =
     useLazyGetTimeSeriesQuery();
 
-  const { symbol, exchange } = useParams<{
-    symbol: string;
-    exchange: string;
-  }>();
+  const { symbol, exchange } = useParams();
 
   const {
     data: stock,
@@ -50,29 +47,12 @@ const Action = () => {
     exchange,
   });
 
-  const handleShowGraph = useCallback(() => {
-    const errors = validateGraphInputs(values);
-    if (errors.hasError) {
-      setErrorMessage(errors);
-      return;
-    }
-    setErrorMessage({ hasError: false, message: '' });
-
-    const basePayload: {
-      symbol: string | undefined;
-      interval: string;
-      start_date?: string;
-      end_date?: string;
-    } = {
-      symbol,
-      interval: values.interval,
-    };
-    if (values.selectedValue === VALUES_TYPE_VIEW.history) {
-      basePayload.start_date = values.dateRange.fromDate?.toISOString();
-      basePayload.end_date = values.dateRange.toDate?.toISOString();
-    }
-    trigger(basePayload);
-  }, [symbol, trigger, values]);
+  const { handleShowGraph } = useRealTimeData({
+    symbol,
+    values,
+    trigger,
+    setErrorMessage,
+  });
 
   if (isLoading) return <LoadingSpinner />;
   if (isError)
@@ -122,21 +102,15 @@ const Action = () => {
         <Button variant="contained" color="primary" onClick={handleShowGraph}>
           Graficar
         </Button>
-
         {errorMessage.hasError && (
           <FormHelperText error>{errorMessage.message}</FormHelperText>
         )}
-        {isTimeSeriesLoading && <LoadingSpinner />}
-        {timeSeries && (
-          <ContentForm>
-            {timeSeries.values && (
-              <StockChart data={timeSeries.values} title={symbol} />
-            )}
-            {timeSeries.status === 'error' && (
-              <FormHelperText error>{timeSeries.message}</FormHelperText>
-            )}
-          </ContentForm>
-        )}
+
+        <StockChart
+          timeSeries={timeSeries}
+          title={symbol}
+          isLoading={isTimeSeriesLoading}
+        />
       </Container>
     </>
   );

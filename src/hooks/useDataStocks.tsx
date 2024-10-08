@@ -3,12 +3,15 @@ import { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { SelectChangeEvent } from '@mui/material';
 import { VALUES_TYPE_VIEW, DEFAULT_VALUE_INTERVAL } from '../utils/constants';
+import { TIntervalOptions } from '../types';
 
 const useDateRangeOptions = () => {
   const [selectedValue, setSelectedValue] = useState<string>(
     VALUES_TYPE_VIEW.realTime,
   );
-  const [interval, setInterval] = useState<string>(DEFAULT_VALUE_INTERVAL);
+  const [interval, setInterval] = useState<TIntervalOptions>(
+    DEFAULT_VALUE_INTERVAL,
+  );
   const [dateRange, setDateRange] = useState<{
     fromDate: Dayjs | null;
     toDate: Dayjs | null;
@@ -25,7 +28,7 @@ const useDateRangeOptions = () => {
   );
 
   const handleIntervalChange = useCallback((event: SelectChangeEvent) => {
-    setInterval(event.target.value as string);
+    setInterval(event.target.value as TIntervalOptions);
   }, []);
 
   const handleDateRangeChange = useCallback(

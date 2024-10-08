@@ -75,7 +75,7 @@ export interface IDateTimeRangePickerProps {
   }) => void;
 }
 
-export type IDateRange = {
+export type TDateRange = {
   fromDate: Dayjs | null;
   toDate: Dayjs | null;
 };
@@ -85,10 +85,11 @@ export interface IValidationResult {
   message: string;
 }
 
+export type TIntervalOptions = '1min' | '5min' | '15min';
 export interface IGraphInputValues {
   selectedValue: string;
-  interval: string | null;
-  dateRange: IDateRange;
+  interval: TIntervalOptions;
+  dateRange: TDateRange;
 }
 
 export interface IStockData {
@@ -101,8 +102,19 @@ export interface IStockData {
 }
 
 export interface IStockChartProps {
-  data: IStockData[];
+  timeSeries: {
+    status?: string;
+    values?: IStockData[];
+    message?: string;
+  };
   title?: string;
   isError?: boolean;
   isLoading?: boolean;
+}
+
+export interface IUseRealTimeDataParams {
+  symbol: string | undefined;
+  values: IGraphInputValues;
+  trigger: (payload: unknown) => void;
+  setErrorMessage: React.Dispatch<React.SetStateAction<IValidationResult>>;
 }
